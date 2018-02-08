@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .content{
+            margin: 5px 0 5px 5px;
+            border: 1px solid yellowgreen;
+            width: 300px;
+            height: 300px;
+            padding: 5px;
+        }
+        .content span {
+            color: red;
+        }
+        .content p {
+            color: darkblue;
+        }
+        .input {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <span id="register">注册</span>
+    <label>用户名：</label>
+    <input type="text" id="name" name="name"/>
+    <label>密码：</label>
+    <input type="password" id="psw" name="password" />
+    <span id="login">登录</span>
+    <label>用户名：</label>
+    <input type="text" id="n" name="n"  />
+    <label>密码：</label>
+    <input type="password" id="p" name="p" />
+    <div>
+        <div class="content" id="content"></div>
+        <input type="text" id="input" name="input" class="input" />
+        <input type="submit" id="sub" />
+    </div>
+    <script>
+        window.onload = function () {
+            var xingming = document.getElementById('xingming');
+            var neirong = document.getElementById('neirong');
+            var input = document.getElementById('input');
+            var sub = document.getElementById('sub');
+            var contentDiv = document.getElementById('content');
+            var register = document.getElementById('register');
+            var login = document.getElementById('login');
+            var name = document.getElementById('name');
+            var nameValue = '';
+            var psw = document.getElementById('psw');
+            var pswValue = '';
+            var n = document.getElementById('n');
+            var p = document.getElementById('p');
+            var nValue = '';
+            var pValue = '';
+            var req = '';
+            var inputV = '';
+            var reqContent = '';
+            var ct = [];
+            name.onchange = function (e) {
+                nameValue = e.target.value
+                console.log(nameValue)
+            }
+            n.onchange = function (e) {
+                nValue = e.target.value
+            }
+            p.onchange = function (e) {
+                pValue = e.target.value
+            }
+            psw.onchange = function (e) {
+                pswValue = e.target.value
+                console.log(pswValue)
+            }
+            input.onchange = function (e) {
+                inputV = e.target.value
+                console.log(inputV)
+            }
+            register.onclick = function () {
+                req = {name: nameValue,psw: pswValue}
+                console.log(req)
+//                $.ajax({
+//                    type:'POST',
+//                    url:'http://localhost:3000/register',
+//                    data: req,
+//                    dataType: 'json',
+//                    success:function(data){
+//                        console.log(data);
+//                    },
+//                    error:function(){
+//                        console.log('error');
+//                    },
+//                })
+                axios.post('http://localhost:3000/api/register',req).then(function (res) {
+                    console.log(res)
+                    if(res.status !== 200) {
+                        alert('注册失败')
+                    }else {
+                        if(res.data.status !== 201) {
+                            alert('注册成功')
+                        }else {
+                            alert('用户名已存在')
+                        }
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+            login.onclick = function () {
+//                $.ajax({
+//                    type:'get',
+//                    url:'http://localhost:3000/login',
+//                    success:function(data){
+//                        console.log(data);
+//                    },
+//                    error:function(){
+//                        console.log('error');
+//                    }
+//                })
+                console.log('登录')
+                console.log(nValue)
+                console.log(pValue)
+                axios.get(`http://localhost:3000/api/login?name=${nValue}&password=${pValue}`).then(function (res) {
+                    console.log(res)
+                    if(res.status !== 200) {
+                        alert('登录失败')
+                    }else {
+                        if(res.data.length !== 0) {
+                            alert('登录成功')
+                            sessionStorage.setItem("name",`${res.data[0].name}`)
+                            console.log('ssssssss');
+                            console.log(`${res.data[0].name}`);
+                            console.log(sessionStorage.getItem("name"))
+                        }else {
+                            alert('用户名或密码错误')
+                        }
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+            sub.onclick = function () {
+                let s = sessionStorage.getItem("name");
+                reqContent = {name: s,content: inputV}
+                console.log(reqContent)
+//                $.ajax({
+//                    type:'POST',
+//                    url:'http://localhost:3000/register',
+//                    data: req,
+//                    dataType: 'json',
+//                    success:function(data){
+//                        console.log(data);
+//                    },
+//                    error:function(){
+//                        console.log('error');
+//                    },
+//                })
+                axios.post('http://localhost:3000/api/chat',reqContent).then(function (res) {
+                    console.log(res)
+                    contentDiv.innerHTML = '';
+                    ct = res.data
+                    ct.reverse()
+                    for(let i=0;i<ct.length;i++) {
+                        let sp = document.createElement('span')
+                        let pp = document.createElement('p')
+                        sp.innerText = ct[i].name;
+                        pp.innerText = ct[i].content
+                        contentDiv.appendChild(sp)
+                        contentDiv.appendChild(pp)
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+//            xingming.innerText = sessionStorage.getItem("name");
+//            neirong.innerText
+        }
+    </script>
+</body>
+</html>
