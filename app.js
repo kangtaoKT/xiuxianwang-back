@@ -75,7 +75,7 @@ let register = (a,res) => {
            console.log(result);
            console.log(a);
            if(result.length !== 0){
-               res.status(200).json({message:'用户名已存在',status: 201}).end()
+               res.status(200).json({message:'用户名已存在',status: 401}).end()
            }else {
                insertDocument(db,a,res, (result,res) => {
                    // res.status(200).json(result).end();
@@ -121,7 +121,7 @@ let login = (rt,res) => {
         assert.equal(null, err);
         console.log("连接成功！");
         selectData(db,rt,res, (result,res) => {
-            res.status(200).json(result).end();
+            res.status(200).json({message:'恭喜你登录成功',status: 200}).end();
             db.close();
         });
     });
