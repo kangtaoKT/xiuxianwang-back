@@ -121,8 +121,13 @@ let login = (rt,res) => {
         assert.equal(null, err);
         console.log("连接成功！");
         selectData(db,rt,res, (result,res) => {
-            res.status(200).json({message:'恭喜你登录成功',status: 200}).end();
-            db.close();
+            if(result && result.length > 0) {
+                res.status(200).json({message:'恭喜你登录成功',status: 200}).end();
+                db.close();
+            }else {
+                res.status(200).json({message:'用户名或密码不正确',status: 401}).end();
+                db.close();
+            }
         });
     });
 };
