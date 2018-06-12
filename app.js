@@ -151,6 +151,22 @@ app.get('/api/login',function (req,res) {
 app.post('/api/chat',function (req,res) {
     chat(req.body,res);
 });
+//写个接口返回d3所需json数据
+app.get('/api/d3', function (req, res) {
+    res.status(200).json({
+        "nodes":[
+            { "name": "云天河"   , "image" : "tianhe.jpg" },
+            { "name": "韩菱纱"   , "image" : "lingsha.jpg" },
+            { "name": "柳梦璃"   , "image" : "mengli.jpg" },
+            { "name": "慕容紫英" , "image" : "ziying.jpg" }
+        ],
+        "edges":[
+            { "source": 0 , "target": 1 , "relation":"挚友" },
+            { "source": 0 , "target": 2 , "relation":"挚友" },
+            { "source": 0 , "target": 3 , "relation":"挚友" }
+        ]
+    }).end()
+});
 //配置服务端口
 let server = app.listen(3000, function () {
 
